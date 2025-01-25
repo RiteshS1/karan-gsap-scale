@@ -131,3 +131,97 @@ gsap.timeline({
 </script>
   </body>
 </html>
+------>
+New save the shrink along with the screen cover scale gsap.registerPlugin(ScrollTrigger);
+
+// Get elements
+const path = document.querySelector("#border-path");
+const fillPath = document.querySelector("#fill-path");
+const video = document.querySelector("#svg-video");
+const pathLength = path.getTotalLength();
+
+// Initial state
+gsap.set(path, {
+  strokeDasharray: pathLength,
+  strokeDashoffset: pathLength, // Start with the line hidden
+});
+
+gsap.set(fillPath, {
+  opacity: 0, // Initially hidden
+});
+
+gsap.set(video, {
+  scale: 1.5, // Start zoomed in
+  transformOrigin: "center center", // Shrink uniformly
+});
+
+gsap.set(".svg-wrapper", {
+  scale: 1, // Start with no scaling
+  transformOrigin: "100% 100%",
+});
+
+// Combined animation timeline
+const combinedTimeline = gsap.timeline({
+  scrollTrigger: {
+    trigger: ".landing-wrapper",
+    start: "top top",
+    end: "bottom top",
+    scrub: true,
+    pin: true,
+  },
+});
+
+// Path reveal effect
+combinedTimeline.to(path, {
+  strokeDashoffset: 0, // Draw the path
+  duration: 4,
+  ease: "power2.inOut",
+});
+
+// Fill path fade-in
+combinedTimeline.to(
+  fillPath,
+  {
+    opacity: 1, // Make the fill visible
+    duration: 2,
+    ease: "power2.inOut",
+  },
+  "-=2" // Slight overlap with the path reveal
+);
+
+// Video scaling uniformly
+combinedTimeline.to(
+  video,
+  {
+    scale: 1, // Shrink to full screen size
+    x: "0%", // Center horizontally
+    y: "0%", // Center vertically
+    duration: 4,
+    ease: "power2.inOut",
+  },
+  0 // Runs concurrently with the path reveal
+);
+
+// SVG wrapper scaling with smooth animation
+combinedTimeline.to(
+  ".svg-wrapper",
+  {
+    scale: 2.4, // Subtle scaling to emphasize the SVG
+    transformOrigin: "100% 100%",
+    duration: 4,
+    ease: "power2.inOut",
+  },
+  0 // Runs concurrently with the path reveal
+);
+
+// Left section moving upward
+combinedTimeline.to(
+  ".left",
+  {
+    y: "-100%", // Move the left section completely out of view
+    duration: 4,
+    ease: "power2.out",
+  },
+  0 // Runs concurrently with other animations
+);
+

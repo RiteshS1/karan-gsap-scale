@@ -22,7 +22,8 @@
           <button>Meet the team</button>
         </div>
         <div class="right">
-          <div class="svg-wrapper">
+     
+         <div class="svg-wrapper">
             <svg
               id="animated-svg"
               height="100%"
@@ -37,6 +38,7 @@
                   <path
                     d="M0 1701V487.498H101.658l-.619-108.401H206.23S275.917 0 696 2V1701H0Z"
                   />
+                  
                 </clipPath>
               </defs>
 
@@ -47,16 +49,23 @@
                 opacity="0"
               />
 
-              <g id="video-group" clip-path="url(#mask-path)">
-                <image
-                  id="svg-video"
-                  href="/owen-lystrup-boLgiM0qwkg-unsplash.jpg"
-                  x="0"
-                  y="0"
-                  width="690"
-                  height="680"
-                  preserveAspectRatio="xMidYMid slice"
-                />
+              <g id="video-group">
+                <foreignObject 
+                  width="100%" 
+                  height="100vh"
+                  clip-path="url(#mask-path)"
+                >
+                  <body xmlns="http://www.w3.org/1999/xhtml">
+                    <img
+                      id="svg-video"
+                      src="/owen-lystrup-boLgiM0qwkg-unsplash.jpg"
+                      alt="video"
+                     style="width: 100%; height: 100vh; object-position: 50%; "
+                      
+                    />
+
+                  </body>
+                </foreignObject>
               </g>
 
               <path
@@ -74,60 +83,104 @@
       </section>
     </main>
 
-    <script >
- gsap.registerPlugin(ScrollTrigger);
-
+    <script>
+      gsap.registerPlugin(ScrollTrigger);
+    
+// Get elements
 const path = document.querySelector("#border-path");
 const fillPath = document.querySelector("#fill-path");
 const video = document.querySelector("#svg-video");
 const pathLength = path.getTotalLength();
 
+// Initial state
 gsap.set(path, {
   strokeDasharray: pathLength,
-  strokeDashoffset: pathLength,
+  strokeDashoffset: pathLength, // Start with the line hidden
 });
 
 gsap.set(fillPath, {
-  opacity: 0,
+  opacity: 0, // Initially hidden
 });
 
 gsap.set(video, {
-  scale: 1.5,
-  x: "-25%", // Shift left to reveal left clipped part
-  transformOrigin: "top left",
+  scale: 1.5, // Start zoomed in
+  transformOrigin: "center center", // Shrink uniformly
 });
 
-gsap.timeline({
+gsap.set(".svg-wrapper", {
+  scale: 1, // Start with no scaling
+  transformOrigin: "100% 100%",
+});
+
+// Combined animation timeline
+const combinedTimeline = gsap.timeline({
   scrollTrigger: {
     trigger: ".landing-wrapper",
     start: "top top",
     end: "bottom top",
     scrub: true,
     pin: true,
-  }
-})
-.to(path, {
-  strokeDashoffset: 0,
+  },
+});
+
+// Path reveal effect
+combinedTimeline.to(path, {
+  strokeDashoffset: 0, // Draw the path
   duration: 4,
-})
-.to(fillPath, {
-  opacity: 1,
-  duration: 4,
-}, 0)
-.to(video, {
-  scale: 1, // Return to original scale
-  x: "0%",  // Center the image
-  duration: 4,
-}, 0)
-.to(".svg-wrapper", {
-  scale: 1, // Minimal expansion to full screen
-  transformOrigin: "100% 100%",
-  duration: 4,
-}, 0)
-.to(".left", {
-  y: "-100%",
-  duration: 4,
-}, 0);
-</script>
+  ease: "power2.inOut",
+});
+
+// Fill path fade-in
+combinedTimeline.to(
+  fillPath,
+  {
+    opacity: 1, // Make the fill visible
+    duration: 2,
+    ease: "power2.inOut",
+  },
+  "-=2" // Slight overlap with the path reveal
+);
+
+// Video scaling uniformly
+combinedTimeline.to(
+  video,
+  {
+    scale: 1, // Shrink to full screen size
+    x: "0%", // Center horizontally
+    y: "0%", // Center vertically
+    duration: 4,
+    ease: "power2.inOut",
+  },
+  0 // Runs concurrently with the path reveal
+);
+
+// SVG wrapper scaling with smooth animation
+combinedTimeline.to(
+  ".svg-wrapper",
+  {
+    scale: 2.4, // Subtle scaling to emphasize the SVG
+    transformOrigin: "100% 100%",
+    duration: 4,
+    ease: "power2.inOut",
+  },
+  0 // Runs concurrently with the path reveal
+);
+
+// Left section moving upward
+combinedTimeline.to(
+  ".left",
+  {
+    y: "-100%", // Move the left section completely out of view
+    duration: 4,
+    ease: "power2.out",
+  },
+  0 // Runs concurrently with other animations
+);
+
+
+    </script>
+    
   </body>
 </html>
+
+

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Unmask Image Animation</title>
+    <title>Masked Video Inside SVG</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <link rel="stylesheet" href="style.css" />
@@ -33,22 +33,34 @@
               preserveAspectRatio="xMidYMid meet"
             >
               <defs>
-                <clipPath id="unmask-path">
-                  <rect x="0" y="0" width="0" height="100%" />
+                <clipPath id="mask-path">
+                  <path
+                    d="M0 1701V487.498H101.658l-.619-108.401H206.23S275.917 0 696 2V1701H0Z"
+                  />
                 </clipPath>
               </defs>
-              <image
-                id="svg-image"
-                href="/owen-lystrup-boLgiM0qwkg-unsplash.jpg"
-                clip-path="url(#unmask-path)"
-                x="0"
-                y="0"
-                width="100%"
-                height="100%"
-                preserveAspectRatio="xMidYMid slice"
-              />
+
               <path
-                id="svg-border"
+                id="fill-path"
+                d="M0 1701V487.498H101.658l-.619-108.401H206.23S275.917 0 696 2V1701H0Z"
+                fill="#d1abe8"
+                opacity="0"
+              />
+
+              <g id="video-group" clip-path="url(#mask-path)">
+                <image
+                  id="svg-video"
+                  href="/owen-lystrup-boLgiM0qwkg-unsplash.jpg"
+                  x="0"
+                  y="0"
+                  width="690"
+                  height="680"
+                  preserveAspectRatio="xMidYMid slice"
+                />
+              </g>
+
+              <path
+                id="border-path"
                 d="M0 1701V487.498H101.658l-.619-108.401H206.23S275.917 0 696 2V1701H0Z"
                 fill="none"
                 stroke="#d1abe8"

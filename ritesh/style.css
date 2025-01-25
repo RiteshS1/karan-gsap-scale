@@ -1,13 +1,6 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 body {
-  font-family: 'Poppins', sans-serif;
-  background-color: #f5f5f5;
-  overflow-x: hidden;
+  margin: 0;
+  font-family: Arial, sans-serif;
 }
 
 .landing-wrapper {
@@ -15,48 +8,51 @@ body {
   justify-content: space-between;
   align-items: center;
   height: 100vh;
-  width: 100%;
-  background-color: #f5f5f5;
+  overflow: hidden;
+  padding: 0 5%;
 }
 
 .left {
-  width: 50%;
-  height: 100vh;
-  padding: 0 80px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  margin-bottom: 20%;
+  width: 40%;
+  z-index: 1;
 }
 
 .left h1 {
-  font-size: 60px;
-  line-height: 1.2;
-  margin-bottom: 20px;
-  color: #000;
-  font-weight: 600;
+  font-size: 3rem;
+  margin: 0;
 }
 
 .left p {
-  font-size: 25px;
-  line-height: 1.5;
-  margin-bottom: 20px;
-  color: #000;
+  font-size: 1.2rem;
+  margin: 20px 0;
 }
 
 .left button {
   padding: 10px 20px;
+  font-size: 1rem;
   background-color: #d1abe8;
   border: none;
-  border-radius: 5px;
-  color: #000;
-  font-size: 20px;
   cursor: pointer;
-  transition: 0.3s;
+}
+
+.right {
+  position: relative;
+  width: 60%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .svg-wrapper {
   width: 100%;
-  height: 100vh;
-  position: relative;
+  height: auto;
+}
+
+svg {
+  width: 100%;
+  height: auto;
+}
+
+#svg-video {
+  object-fit: cover;
 }

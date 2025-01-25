@@ -1,18 +1,22 @@
+gsap.registerPlugin(ScrollTrigger);
+
 // Get elements
-const video = document.querySelector("#svg-video");
+const maskRect = document.querySelector("#unmask-path rect");
+const svgImage = document.querySelector("#svg-image");
 const svgWrapper = document.querySelector(".svg-wrapper");
 
-// Initial state
-gsap.set(video, {
-  scale: 1.5, // Start with a zoomed-in scale so part of the image is clipped
-  transformOrigin: "top left", // Align transformation to the top-left corner
+// Initial State
+gsap.set(maskRect, {
+  width: 0, // Start fully masked
 });
 
-// Animate the unmasking and scaling
-gsap.to(video, {
-  scale: 1, // Shrink to reveal hidden parts
-  duration: 4, // Match this duration with your SVG's scaling animation
-  ease: "power2.out",
+gsap.set(svgWrapper, {
+  scale: 1,
+  transformOrigin: "center center",
+});
+
+// Animation Timeline
+gsap.timeline({
   scrollTrigger: {
     trigger: ".landing-wrapper",
     start: "top top",
@@ -20,4 +24,14 @@ gsap.to(video, {
     scrub: true,
     pin: true,
   },
-});
+})
+  .to(maskRect, {
+    width: "100%", // Unmask the full width
+    duration: 3,
+    ease: "power2.inOut",
+  })
+  .to(svgWrapper, {
+    scale: 1.5, // Expand the entire SVG and image
+    duration: 2,
+    ease: "power2.out",
+  });

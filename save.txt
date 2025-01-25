@@ -22,8 +22,7 @@
           <button>Meet the team</button>
         </div>
         <div class="right">
-     
-         <div class="svg-wrapper">
+          <div class="svg-wrapper">
             <svg
               id="animated-svg"
               height="100%"
@@ -38,7 +37,6 @@
                   <path
                     d="M0 1701V487.498H101.658l-.619-108.401H206.23S275.917 0 696 2V1701H0Z"
                   />
-                  
                 </clipPath>
               </defs>
 
@@ -49,23 +47,16 @@
                 opacity="0"
               />
 
-              <g id="video-group">
-                <foreignObject 
-                  width="100%" 
-                  height="100vh"
-                  clip-path="url(#mask-path)"
-                >
-                  <body xmlns="http://www.w3.org/1999/xhtml">
-                    <img
-                      id="svg-video"
-                      src="/owen-lystrup-boLgiM0qwkg-unsplash.jpg"
-                      alt="video"
-                     style="width: 100%; height: 100vh; object-position: 50%; "
-                      
-                    />
-
-                  </body>
-                </foreignObject>
+              <g id="video-group" clip-path="url(#mask-path)">
+                <image
+                  id="svg-video"
+                  href="/owen-lystrup-boLgiM0qwkg-unsplash.jpg"
+                  x="0"
+                  y="0"
+                  width="690"
+                  height="680"
+                  preserveAspectRatio="xMidYMid slice"
+                />
               </g>
 
               <path
@@ -83,181 +74,60 @@
       </section>
     </main>
 
-    <script>
-      gsap.registerPlugin(ScrollTrigger);
+    <script >
+  gsap.registerPlugin(ScrollTrigger);
 
-      // Get elements
-      const path = document.querySelector("#border-path");
-      const fillPath = document.querySelector("#fill-path");
-      const video = document.querySelector("#svg-video");
-      const pathLength = path.getTotalLength();
+const path = document.querySelector("#border-path");
+const fillPath = document.querySelector("#fill-path");
+const video = document.querySelector("#svg-video");
+const pathLength = path.getTotalLength();
 
-      // Initial state
-      gsap.set(path, {
-        strokeDasharray: pathLength,
-        strokeDashoffset: pathLength,
-      });
+gsap.set(path, {
+  strokeDasharray: pathLength,
+  strokeDashoffset: pathLength,
+});
 
-      gsap.set(fillPath, {
-        opacity: 0,
-      });
+gsap.set(fillPath, {
+  opacity: 0,
+});
 
-      gsap.set(video, {
-        opacity: 0,
-        scale: 1,
-      });
+gsap.set(video, {
+  scale: 1.5,
+  x: "-25%", // Shift left to reveal left clipped part
+  transformOrigin: "top left",
+});
 
-      // Create animation timeline
-      const tl = gsap.timeline();
-
-      tl.to(path, {
-        strokeDashoffset: 0,
-        duration: 4,
-        ease: "power2.inOut",
-      })
-        .to(fillPath, {
-          opacity: 1,
-          duration: 1,
-          ease: "power2.inOut",
-        })
-        .to(path, {
-          strokeDashoffset: pathLength,
-          duration: 2,
-          ease: "power2.inOut",
-        })
-        .to(fillPath, {
-          opacity: 1,
-          duration: 1,
-          ease: "power2.inOut",
-        })
-        .to(
-          video,
-          {
-            opacity: 1,
-            scale: 1.2,
-            duration: 1,
-            ease: "power2.inOut",
-          },
-          "-=1"
-        );
-
-      // Left section moves up
-      gsap.to(".left", {
-        y: "-100%",
-        duration: 1,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: ".landing-wrapper",
-          start: "top top",
-          end: "bottom top",
-          scrub: true,
-          markers: true,
-        },
-      });
-
-      // Only the SVG scales up and pins
-      gsap.to(".svg-wrapper", {
-  scale: 2.4,
-  transformOrigin: "100% 100%",
-  ease: "power2.out",
+gsap.timeline({
   scrollTrigger: {
     trigger: ".landing-wrapper",
     start: "top top",
     end: "bottom top",
     scrub: true,
     pin: true,
-  },
-});
-
-
-    </script>
+  }
+})
+.to(path, {
+  strokeDashoffset: 0,
+  duration: 4,
+})
+.to(fillPath, {
+  opacity: 1,
+  duration: 4,
+}, 0)
+.to(video, {
+  scale: 1, // Return to original scale
+  x: "0%",  // Center the image
+  duration: 4,
+}, 0)
+.to(".svg-wrapper", {
+  scale: 1, // Minimal expansion to full screen
+  transformOrigin: "100% 100%",
+  duration: 4,
+}, 0)
+.to(".left", {
+  y: "-100%",
+  duration: 4,
+}, 0);
+</script>
   </body>
 </html>
-------->>>>>>>>
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body{
-    font-family: 'Poppins', sans-serif;
-    background-color: #f5f5f5;
-    width: 100%;
-    height: 100%;
-    overflow-x: hidden;
-}
-.landing-wrapper{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 100vh;
-    width: 100%;
-    background-color: #f5f5f5;
-}
-.left{
-    width: 50%;
-    height: 100vh;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    margin-bottom: 20%;
-    padding: 0 80px;
-    background-color: #f5f5f5;
-    position: relative;
-    
-}
-.right{
-    width: 50%;
-    height: 100vh;
-    
-}
-
-.left h1{
-    font-size: 60px;
-    line-height: 1.2;
-    margin-bottom: 20px;
-    color: #000000;
-    font-weight: 600;
-}
-.h1-span{
-    font-size: 60px;
-    line-height: 1.2;
-    margin-bottom: 20px;
-    color: #000000;
-    font-weight: 600;
-    font-style: italic;
-}
-.left p{
-    font-size: 25px;
-    line-height: 1.5;
-    margin-bottom: 20px;
-    color: #000000;
-    font-weight: 400;
-}
-.left button{
-    padding: 10px 20px;
-    border-radius: 5px;
-    border: none;
-    background-color: #d1abe8;
-    color: #000;
-    font-size: 20px;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-    width: 200px;
-    height: 50px;
-}
-
-video{
-    width: 100%;
-    height: 100vh;
-}
-.svg-wrapper{
-    width: 100%;
-    height: 100vh;
-    position: relative;
-
-  
-}
-

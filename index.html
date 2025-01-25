@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Masked Video Inside SVG</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main>
+      <section class="landing-wrapper">
+        <div class="left">
+          <h1>
+            Grow with <br /><span class="h1-span">confidence</span>
+          </h1>
+          <p>
+            Custom investment solutions <br /> designed for institutional clients.
+            <br /> Grow with confidence.
+          </p>
+          <button>Meet the team</button>
+        </div>
+        <div class="right">
+     
+         <div class="svg-wrapper">
+            <svg
+              id="animated-svg"
+              height="100%"
+              width="100%"
+              viewBox="0 0 690 680"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              preserveAspectRatio="xMidYMid meet"
+            >
+              <defs>
+                <clipPath id="mask-path">
+                  <path
+                    d="M0 1701V487.498H101.658l-.619-108.401H206.23S275.917 0 696 2V1701H0Z"
+                  />
+                  
+                </clipPath>
+              </defs>
+
+              <path
+                id="fill-path"
+                d="M0 1701V487.498H101.658l-.619-108.401H206.23S275.917 0 696 2V1701H0Z"
+                fill="#d1abe8"
+                opacity="0"
+              />
+
+              <g id="video-group">
+                <foreignObject 
+                  width="100%" 
+                  height="100vh"
+                  clip-path="url(#mask-path)"
+                >
+                  <body xmlns="http://www.w3.org/1999/xhtml">
+                    <img
+                      id="svg-video"
+                      src="/owen-lystrup-boLgiM0qwkg-unsplash.jpg"
+                      alt="video"
+                     style="width: 100%; height: 100vh; object-position: 50%; "
+                      
+                    />
+
+                  </body>
+                </foreignObject>
+              </g>
+
+              <path
+                id="border-path"
+                d="M0 1701V487.498H101.658l-.619-108.401H206.23S275.917 0 696 2V1701H0Z"
+                fill="none"
+                stroke="#d1abe8"
+                stroke-width="8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script>
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Get elements
+  const path = document.querySelector("#border-path");
+  const fillPath = document.querySelector("#fill-path");
+  const video = document.querySelector("#svg-video");
+  const pathLength = path.getTotalLength();
+
+  // Initial state
+  gsap.set(path, {
+    strokeDasharray: pathLength,
+    strokeDashoffset: pathLength,
+  });
+
+  gsap.set(fillPath, {
+    opacity: 0,
+  });
+
+  gsap.set(video, {
+    opacity: 0,
+    scale: 1,
+  });
+
+  // Create animation timeline
+  const tl = gsap.timeline();
+
+  tl.to(path, {
+    strokeDashoffset: 0,
+    duration: 4,
+    ease: "power2.inOut",
+  })
+    .to(fillPath, {
+      opacity: 1,
+      duration: 1,
+      ease: "power2.inOut",
+    })
+    .to(path, {
+      strokeDashoffset: pathLength,
+      duration: 2,
+      ease: "power2.inOut",
+    })
+    .to(fillPath, {
+      opacity: 1,
+      duration: 1,
+      ease: "power2.inOut",
+    })
+    .to(
+      video,
+      {
+        opacity: 1,
+        scale: 1.2,
+        duration: 1,
+        ease: "power2.inOut",
+      },
+      "-=1"
+    );
+
+  // Left section moves up
+  gsap.to(".left", {
+    y: "-100%",
+    duration: 1,
+    ease: "power2.out",
+    scrollTrigger: {
+      trigger: ".landing-wrapper",
+      start: "top top",
+      end: "bottom top",
+      scrub: true,
+      markers: true,
+    },
+  });
+
+  // SVG scales up and pins
+  gsap.to(".svg-wrapper", {
+    scale: 2.4,
+    transformOrigin: "100% 100%",
+    ease: "power2.out",
+    scrollTrigger: {
+      trigger: ".landing-wrapper",
+      start: "top top",
+      end: "bottom top",
+      scrub: true,
+      pin: true,
+    },
+  });
+
+  // Image moves inwards
+  gsap.to(video, {
+    objectPosition: "0% 0%",
+    ease: "power2.out",
+    scrollTrigger: {
+      trigger: ".landing-wrapper",
+      start: "top top",
+      end: "bottom top",
+      scrub: true,
+    },
+  });
+</script>
+  </body>
+</html>

@@ -3,27 +3,27 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Masked Video Inside SVG</title>
+    <title>Masked Video Inside SVG with Lenis</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@latest/bundled/lenis.min.js"></script>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <main>
       <section class="landing-wrapper">
         <div class="left">
-          <h1>
-            Grow with <br /><span class="h1-span">confidence</span>
-          </h1>
-          <p>
-            Custom investment solutions <br /> designed for institutional clients.
-            <br /> Grow with confidence.
-          </p>
-          <button>Meet the team</button>
+          <div class="left-text">
+            <h1>Grow with <br /><span class="h1-span">confidence</span></h1>
+            <p>
+              Custom investment solutions designed for institutional clients.
+              Grow with confidence.
+            </p>
+            <button>Meet the team</button>
+          </div>
         </div>
         <div class="right">
-     
-         <div class="svg-wrapper">
+          <div class="svg-wrapper">
             <svg
               id="animated-svg"
               height="100%"
@@ -38,7 +38,6 @@
                   <path
                     d="M0 1701V487.498H101.658l-.619-108.401H206.23S275.917 0 696 2V1701H0Z"
                   />
-                  
                 </clipPath>
               </defs>
 
@@ -50,20 +49,32 @@
               />
 
               <g id="video-group">
-                <foreignObject 
-                  width="100%" 
+                <foreignObject
+                  width="100%"
                   height="100vh"
                   clip-path="url(#mask-path)"
+                  object-fit: cover;
                 >
                   <body xmlns="http://www.w3.org/1999/xhtml">
-                    <img
+                    <video
+                    autoplay
+                    loop
+                    muted
+                    
                       id="svg-video"
-                      src="/owen-lystrup-boLgiM0qwkg-unsplash.jpg"
                       alt="video"
-                     style="width: 100%; height: 100vh; object-position: 50%; "
-                      
+                      style="
+                        width: 100%;
+                        height: 100vh;
+                        object-position: 50% 50%;
+                        object-fit: cover;
+                        opacity: 0;
+                    
+                      "
                     />
 
+                    <source  src="https://videos.pexels.com/video-files/2772930/2772930-uhd_2560_1440_30fps.mp4" type="video/mp4">
+                    </video>
                   </body>
                 </foreignObject>
               </g>
@@ -81,106 +92,179 @@
           </div>
         </div>
       </section>
+      <div class="hidden-text">
+        <h1>Grow with <br /><span class="h2-span">confidence</span></h1>
+        <p>
+          Custom investment solutions designed for institutional clients.
+          Grow with confidence.
+        </p>
+        <button>Meet the team</button>
+      </div>
     </main>
 
     <script>
+      // Initialize Lenis for smooth scrolling
+      const lenis = new Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Custom easing
+        smooth: true,
+        smoothTouch: true,
+      });
+
+      function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+      }
+
+      requestAnimationFrame(raf);
+
+      // Register GSAP ScrollTrigger to use Lenis
       gsap.registerPlugin(ScrollTrigger);
-    
-// Get elements
-const path = document.querySelector("#border-path");
-const fillPath = document.querySelector("#fill-path");
-const video = document.querySelector("#svg-video");
-const pathLength = path.getTotalLength();
 
-// Initial state
-gsap.set(path, {
-  strokeDasharray: pathLength,
-  strokeDashoffset: pathLength, // Start with the line hidden
-});
+      ScrollTrigger.scrollerProxy(document.body, {
+        scrollTop(value) {
+          return arguments.length ? lenis.scrollTo(value) : lenis.scroll;
+        },
+        getBoundingClientRect() {
+          return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight };
+        },
+      });
 
-gsap.set(fillPath, {
-  opacity: 0, // Initially hidden
-});
+      lenis.on("scroll", ScrollTrigger.update);
 
-gsap.set(video, {
-  scale: 1.5, // Start zoomed in
-  transformOrigin: "center center", // Shrink uniformly
-});
+      // Get elements
+      const path = document.querySelector("#border-path");
+      const fillPath = document.querySelector("#fill-path");
+      const video = document.querySelector("#svg-video");
+      const pathLength = path.getTotalLength();
+      const left = document.querySelector(".left-text");
 
-gsap.set(".svg-wrapper", {
-  scale: 1, // Start with no scaling
-  transformOrigin: "100% 100%",
-});
+      // Initial state
+      gsap.set(path, {
+        strokeDasharray: pathLength,
+        strokeDashoffset: pathLength, // Start with the line hidden
+      });
 
-// Combined animation timeline
-const combinedTimeline = gsap.timeline({
-  scrollTrigger: {
-    trigger: ".landing-wrapper",
-    start: "top top",
-    end: "bottom top",
-    scrub: true,
-    pin: true,
-  },
-});
+      gsap.set(fillPath, {
+        opacity: 0, // Initially hidden
+      });
 
-// Path reveal effect
-combinedTimeline.to(path, {
-  strokeDashoffset: 0, // Draw the path
-  duration: 4,
-  ease: "power2.inOut",
-});
+      gsap.set(video, {
+        scale: 1.2, // Start zoomed in
+        transformOrigin: "center center", // Shrink uniformly
+      });
 
-// Fill path fade-in
-combinedTimeline.to(
-  fillPath,
-  {
-    opacity: 1, // Make the fill visible
-    duration: 2,
-    ease: "power2.inOut",
-  },
-  "-=2" // Slight overlap with the path reveal
-);
+      gsap.set(".svg-wrapper", {
+        scale: 1, // Start with no scaling
+        transformOrigin: "100% 100% 100%",
+      });
 
-// Video scaling uniformly
-combinedTimeline.to(
-  video,
-  {
-    scale: 1, // Shrink to full screen size
-    x: "0%", // Center horizontally
-    y: "0%", // Center vertically
-    duration: 4,
-    ease: "power2.inOut",
-  },
-  0 // Runs concurrently with the path reveal
-);
+      gsap.set(left, {
+        alpha: 0,
+        y: 20,
+      });
 
-// SVG wrapper scaling with smooth animation
-combinedTimeline.to(
-  ".svg-wrapper",
-  {
-    scale: 2.4, // Subtle scaling to emphasize the SVG
-    transformOrigin: "100% 100%",
-    duration: 4,
-    ease: "power2.inOut",
-  },
-  0 // Runs concurrently with the path reveal
-);
+      gsap.set(".hidden-text", {
+        alpha: 0,
+        y: 20,
+      });
 
-// Left section moving upward
-combinedTimeline.to(
-  ".left",
-  {
-    y: "-100%", // Move the left section completely out of view
-    duration: 4,
-    ease: "power2.out",
-  },
-  0 // Runs concurrently with other animations
-);
+      // Animation timeline for the SVG and video appearance
+      const tl = gsap.timeline();
 
+      tl.to(left, {
+        alpha: 1,
+        y: 0,
+        duration: 3,
+        ease: "power3.inOut",
+      })
+        // .to(
+        //   path,
+        //   {
+        //     strokeDashoffset: 0,
+        //     duration: 8,
+        //     ease: "power2.inOut",
+        //   },
+        //   "+=1"
+        // )
+        .to(fillPath, {
+          opacity: 1,
+          duration: 1,
+          ease: "power2.inOut",
+        })
+        // .to(path, {
+        //   strokeDashoffset: pathLength,
+        //   duration: 0.5,
+        //   ease: "power2.inOut",
+        // })
+   
+        .to(video, {
+          opacity: 1,
+          duration: 1,
+          scale: 1.2,
+          ease: "power2.inOut",
+        });
 
+      // Combined animation timeline
+      const combinedTimeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: ".landing-wrapper",
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+          pin: true,
+          pinSpacing: true,
+        },
+      });
+
+      // Video scaling uniformly
+      combinedTimeline.to(
+        video,
+        {
+          scale: 1, // Shrink to full screen size
+          x: "0%", // Center horizontally
+          y: "0%", // Center vertically
+          duration: 4,
+          ease: "power2.inOut",
+        },
+        0 // Runs concurrently with the path reveal
+      );
+
+      // SVG wrapper scaling with smooth animation
+      combinedTimeline.to(
+        ".svg-wrapper",
+        {
+          scale: 2.38, // Subtle scaling to emphasize the SVG
+          transformOrigin: "100% 100% 100%",
+          duration: 4,
+          ease: "power2.inOut",
+        },
+        0 // Runs concurrently with the path reveal
+      );
+
+      combinedTimeline.to(
+        ".hidden-text",
+        {
+          alpha: 1,
+          y: 0,
+          delay: 5,
+          display: "block",
+          duration: 1,
+          ease: "power2.inOut",
+        },
+        0
+      );
+
+      // Left section moving upward
+      combinedTimeline.to(
+        ".left",
+        {
+          y: "-100%", // Move the left section completely out of view
+          duration: 4,
+          ease: "power2.out",
+        },
+        0 // Runs concurrently with other animations
+      );
     </script>
-    
   </body>
 </html>
-
-
